@@ -12,18 +12,18 @@
 
 ```bash
 # 1. 校验（对一下 Release 页上写的那串）
-shasum -a 256 aiona-rover-0.4.1-arm64.tar.gz
+shasum -a 256 aiona-rover-0.4.2-arm64.tar.gz
 
 # 2. 解包
 mkdir -p ~/aiona-rover
-tar -xzf aiona-rover-0.4.1-arm64.tar.gz -C ~/aiona-rover
+tar -xzf aiona-rover-0.4.2-arm64.tar.gz -C ~/aiona-rover
 
 # 3. 装
 cd ~/aiona-rover && ./scripts/setup.sh <你的名字>
 ```
 
 ```
-0.4.1  SHA-256  6a9a7d990772c24270e79b1feafa849a551fab581b873e1dc1e76bf4c7b5e979
+0.4.2  SHA-256  0e2e3e59665198cb63ee47223b1d60e157a83286c6ddd8e2b82e41876d7e1046
 ```
 
 向导会带你走完：装 Codex CLI、登录、选平台、建工作目录、扫码授权、装成开机自启的服务，
@@ -45,15 +45,25 @@ cd ~/aiona-rover && ./scripts/setup.sh <你的名字>
 
 ## 升级
 
-**不用停服务，也不用重跑 `setup.sh`**：
+0.4.2 起是一条命令，不用停服务，也不用重跑 `setup.sh`：
 
 ```bash
-tar -xzf aiona-rover-<新版本>-arm64.tar.gz -C ~/aiona-rover
-cd ~/aiona-rover && ./scripts/install-launch-agent.sh <你的名字>
+cd ~/aiona-rover
+./scripts/update.sh --check      # 先看看：有没有新版本，每个实例在跑什么、忙不忙
+./scripts/update.sh --codex      # 更新 aiona-rover + Codex，逐个重启这台机器上的实例
 ```
 
-一台机器上有几个实例的话，一个一个重启，每个之间确认一下。包内 `docs/OPERATIONS.md` 有完整的
-升级和回滚说明。
+或者在聊天里发 `/update` 看、`/update <动态码>` 更新。它会核对 GitHub 公布的 SHA-256，每个实例等
+手上的任务跑完再重启，出错自动换回原来的版本。细节见包内 `docs/UPDATE.md`。
+
+**从 0.4.1 升上来的这一次要手工**（0.4.1 里还没有更新程序）：
+
+```bash
+cd ~ && curl -fsSLO https://github.com/tomszhou/aiona-rover-releases/releases/download/v0.4.2/aiona-rover-0.4.2-arm64.tar.gz
+shasum -a 256 aiona-rover-0.4.2-arm64.tar.gz     # 对一下上面那串
+tar -xzf aiona-rover-0.4.2-arm64.tar.gz -C ~/aiona-rover
+cd ~/aiona-rover && ./scripts/update.sh --restart-only --codex
+```
 
 ## 卸载
 
@@ -67,7 +77,7 @@ cd ~/aiona-rover && ./scripts/uninstall.sh <你的名字>
 ## 文档
 
 安装包里带着：`docs/MANUAL.md`（聊天里能用的指令）、`docs/WECHAT.md`、`docs/WECOM.md`、
-`docs/DINGTALK.md`（各平台怎么配）、`docs/OPERATIONS.md`（运行、升级、排障）、
+`docs/DINGTALK.md`（各平台怎么配）、`docs/UPDATE.md`（更新）、`docs/OPERATIONS.md`（运行、排障）、
 `docs/ISOLATION.md`（几个人共用一台机器时，隔离做得到什么、做不到什么）。
 
 ## 有问题
